@@ -22,6 +22,16 @@ config :logger, :console,
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
 
+config :hammer,
+  backend:
+    {Hammer.Backend.Redis,
+     [
+       expiry_ms: 60_000 * 60 * 2,
+       redix_config: [host: "localhost", port: 6379],
+       pool_size: 4,
+       pool_max_overflow: 2
+     ]}
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{config_env()}.exs"

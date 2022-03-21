@@ -8,7 +8,7 @@ defmodule ShortlyWeb.Router do
   scope "/", ShortlyWeb do
     pipe_through :api
 
-    get "/:hash", MainController, :show
-    post "/", MainController, :create
+    get "/:id", Controllers.MainController, :show
+    post "/", Controllers.MainController, :create
   end
 end

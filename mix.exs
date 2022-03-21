@@ -39,7 +39,9 @@ defmodule Shortly.MixProject do
       {:jason, "~> 1.2"},
       {:plug_cowboy, "~> 2.5"},
       {:uuid, "~> 1.1"},
-      {:redix, "~> 1.1"}
+      {:redix, "~> 0.8"},
+      {:hammer, "~> 6.0"},
+      {:hammer_backend_redis, "~> 6.1"}
     ]
   end
 
