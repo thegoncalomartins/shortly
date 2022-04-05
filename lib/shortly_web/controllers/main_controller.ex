@@ -12,11 +12,7 @@ defmodule ShortlyWeb.Controllers.MainController do
     case Hammer.check_rate("create:#{remote_ip}", rate_scale_ms, rate_limit) do
       {:allow, count} ->
         # shorten
-        id =
-          UUID.uuid5(:url, url, :hex)
-          |> String.slice(0..6)
-
-        case UrlService.create(%Url{id: id, url: url}) do
+        case UrlService.create(Url.build(%{url: url})) do
           {:ok, result} ->
             conn
             |> put_status(:created)
@@ -42,23 +38,7 @@ defmodule ShortlyWeb.Controllers.MainController do
     end
   end
 
-  def show(conn, %{"id" => id, "redirect" => "true"}) do
-    conn |> redirect_to(id)
-  end
-
-  def show(conn, %{"id" => id, "redirect" => "false"}) do
-    conn |> find(id)
-  end
-
-  def show(conn, %{"id" => id, "redirect" => ""}) do
-    conn |> redirect_to(id)
-  end
-
   def show(conn, %{"id" => id}) do
-    conn |> find(id)
-  end
-
-  defp redirect_to(conn, id) do
     case UrlService.increment_hits_and_get(id) do
       {:ok, nil} ->
         conn
@@ -67,23 +47,6 @@ defmodule ShortlyWeb.Controllers.MainController do
 
       {:ok, url} ->
         conn |> redirect(external: url.url)
-
-      {:error, error} ->
-        conn
-        |> put_status(:internal_server_error)
-        |> json(%{"error" => error})
-    end
-  end
-
-  defp find(conn, id) do
-    case UrlService.find_one(id) do
-      {:ok, nil} ->
-        conn
-        |> put_status(:not_found)
-        |> json(%{"error" => "URL with '#{id}' not found"})
-
-      {:ok, url} ->
-        conn |> json(url)
 
       {:error, error} ->
         conn

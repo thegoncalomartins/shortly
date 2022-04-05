@@ -2,10 +2,6 @@ defmodule Shortly.Services.UrlService do
   alias Shortly.Models.Url
   alias Shortly.Repositories.UrlRepository
 
-  def find_one(id) do
-    UrlRepository.find_one(id)
-  end
-
   def create(url = %Url{}) do
     case UrlRepository.find_one(url.id) do
       {:ok, nil} ->
@@ -24,7 +20,7 @@ defmodule Shortly.Services.UrlService do
       {:ok, nil} ->
         {:ok, nil}
 
-      {:ok, result} ->
+      {:ok, _} ->
         UrlRepository.increment_hits_and_get(id)
 
       {:error, error} ->
